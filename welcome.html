@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogIn Page Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Comfortaa', cursive;
+      background: linear-gradient(135deg, #ffe0e9, #ffdde1);
+      display: flex;
+      justify-content: center;
+      padding: 50px 0;
+    }
+
+    .dashboard-container {
+      background: #fff;
+      padding: 35px 25px;
+      border-radius: 25px;
+      width: 450px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .dashboard-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .dashboard-container img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ffd6e0;
+    }
+
+    h1 {
+      margin: 15px 0;
+      color: #ff6f91;
+      font-size: 28px;
+    }
+
+    h2 {
+      color: #ff7fa3;
+      font-size: 20px;
+      margin: 20px 0 10px 0;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 15px;
+      border: 1px solid #f0a1c2;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #ff6f91;
+      box-shadow: 0 0 8px rgba(255,111,145,0.3);
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 5px 15px rgba(255,111,145,0.3);
+    }
+
+    .login-btn { background: #ff85c0; }
+    .login-btn:hover { background: #ff4f9b; }
+
+    .save-btn { background: #ff6f91; }
+    .save-btn:hover { background: #e0557a; }
+
+    .logout-btn { background: #ff8a65; }
+    .logout-btn:hover { background: #e06b4a; }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .section label {
+      font-weight: 600;
+      color: #ff5e7a;
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <img src="https://png.pngtree.com/png-clipart/20240515/original/pngtree-example-of-cute-character-model-png-image_15098539.png" alt="Cartoon">
+
+  <!-- Welcome Message below the picture -->
+  <h1>Cheers!</h1>
+
+  <!-- Login Section -->
+  <h2>Adventure awaits—dive in, explore, and enjoy every moment!👋</h2>
+  <div class="section">
+    <label for="usernameInput">Username</label>
+    <input type="text" id="usernameInput" placeholder="Type your username">
+  </div>
+  <div class="section">
+    <label for="passwordInput">Password</label>
+    <input type="password" id="passwordInput" placeholder="Enter your password">
+  </div>
+  <button class="login-btn" onclick="login()">Login</button>
+
+  <!-- Profile Section -->
+  <h2>Share a bit about you ✨👋</h2>
+  <div class="section">
+    <label for="emailInput">Email</label>
+    <input type="email" id="emailInput" placeholder="Your email ">
+  </div>
+  <div class="section">
+    <label for="bioInput">Bio</label>
+    <textarea id="bioInput" placeholder="About You"></textarea>
+  </div>
+  <button class="save-btn" onclick="saveProfile()">Save Info</button>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<script>
+  let userData = { email: "", bio: "" };
+  document.getElementById('emailInput').value = "";
+  document.getElementById('bioInput').value = "";
+
+  function saveProfile() {
+    userData.email = document.getElementById('emailInput').value;
+    userData.bio = document.getElementById('bioInput').value;
+    alert("Your info is saved! 😊");
+  }
+
+  function logout() {
+    alert("See you soon! 👋");
+    window.location.href = "login.html";
+  }
+
+  function login() {
+    const username = document.getElementById('usernameInput').value;
+    const password = document.getElementById('passwordInput').value;
+
+    if(username === "user" && password === "1234") {
+      alert(`Welcome back, ${username}! 🎉`);
+    } else {
+      alert("Hmm, that doesn't look right. ");
+    }
+  }
+</script>
+
+</body>
+</html>
