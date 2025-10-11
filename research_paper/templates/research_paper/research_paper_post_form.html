@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Post New Research Paper{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Post New Research Paper</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Post Paper</button>
+        <a href="{% url 'research_paper_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

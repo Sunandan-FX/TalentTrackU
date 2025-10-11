@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Manage Application{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1>Manage Application</h1>
+    <p>Applicant: {{ application.applicant.username }}</p>
+    <p>Research Paper: {{ application.paper.title }}</p>
+    <p>Current Status: {{ application.get_status_display }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+        <a href="{% url 'research_paper_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

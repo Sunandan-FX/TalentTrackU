@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Research Papers{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Research Papers</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'research_paper_post_create' %}" class="btn btn-success mb-3">Post New Research Paper</a>
+    {% endif %}
+    <div class="row">
+        {% if papers %}
+            {% for paper in papers %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if paper.file %}
+                        <div class="card-img-top text-center">
+                            <a href="{{ paper.file.url }}" class="btn btn-link" target="_blank">View Paper</a>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                                                <h5 class="card-title">{{ paper.title }}</h5>
+                                                <p><strong>Authors:</strong> {{ paper.authors }}</p>
+                                                <p><strong>Abstract:</strong> {{ paper.abstract }}</p>
+                                                {% if paper.pdf %}
+                                                    <p><strong>PDF:</strong> <a href="{{ paper.pdf.url }}" download>Download PDF</a></p>
+                                                {% endif %}
+                                                {% if paper.thumbnail %}
+                                                    <img src="{{ paper.thumbnail.url }}" alt="Thumbnail" style="max-width:120px;">
+                                                {% endif %}
+                                                <p class="text-muted small">Posted: {{ paper.created_at|date:"M d, Y" }}</p>
+
+                        {% if user.is_authenticated %}
+                            {% if paper.id in applied_papers %}
+                                <span class="badge bg-success">Applied</span>
+                            {% else %}
+                                <a href="{% url 'research_paper_apply' paper.id %}" class="btn btn-primary">Apply</a>
+                            {% endif %}
+
+                            {% if paper.posted_by == user %}
+                                <a href="{% url 'research_paper_delete' paper.id %}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure?')">Delete</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No research papers posted yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
