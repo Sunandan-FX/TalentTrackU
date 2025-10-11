@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to Opportunity{% endblock %}
+{% block content %}
+{% comment %} <div class="container text-center my-5">
+    <h1>Welcome to Opportunity</h1>
+    <p>Explore opportunities in jobs, research papers, and internships.</p>
+    {% comment %} {% if user.is_authenticated and user.user_profile.profile_picture %}
+        <img src="{{ user.user_profile.profile_picture.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+    {% endif %} 
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{% url 'job:job_list' %}" class="btn btn-primary btn-lg">Browse Jobs</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'research_paper_list' %}" class="btn btn-primary btn-lg">View Research Papers</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'internship_list' %}" class="btn btn-primary btn-lg">Explore Internships</a>
+        </div>
+    </div> {% endcomment %}
+    
+{% endblock %}

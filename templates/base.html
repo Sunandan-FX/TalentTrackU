@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Opportunity{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Embed styles for Django template blocks/variables */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            position: relative;
+        }
+        .alert-info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        .alert-success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .alert-warning { background-color: #fff3cd; border-color: #ffeeba; color: #856404; }
+        .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .btn-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1rem 1rem;
+            color: inherit;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            line-height: 1;
+            opacity: 0.5;
+        }
+        .btn-close:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a class="navbar-brand" href="{% url 'home' %}">Opportunity Platform</a>
+            <button class="navbar-toggler" id="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav left-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_search' %}">Search</a></li>
+                </ul>
+                <ul class="navbar-nav right-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'my_post_internship_applications' %}">Applications for My Internships</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'job:my_post_job_applications' %}">Applications for My Jobs</a></li>
+
+                        <li class="nav-item dropdown" id="profile-dropdown-trigger">
+                            <a class="nav-link dropdown-toggle" href="#">
+                                Hello, {{ user.username }} ({{ user.user_profile.role|title|default:"No Role" }})
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile_edit' %}">Edit Profile</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown" id="post-dropdown-trigger">
+                            <a class="nav-link dropdown-toggle" href="#">Post New</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'job:job_post_create' %}">Post Job</a></li>
+                                <li><a class="dropdown-item" href="{% url 'research_paper_post_create' %}">Post Research Paper</a></li>
+                                <li><a class="dropdown-item" href="{% url 'internship_post_create' %}">Post Internship</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link nav-btn" href="{% url 'user_logout' %}">Logout</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+                        <li class="nav-item"><a class="nav-link nav-btn" href="{% url 'user_login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if request.resolver_match.url_name == 'home' %}
+        {% include "main_actions_section.html" %}
+    {% endif %}
+    {% include "benefits_animation.html" %}
+    <div class="container content">
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                        <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
