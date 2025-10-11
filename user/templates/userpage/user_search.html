@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}User Search{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Search User by Username</h1>
+    <form method="get" action="">
+        <div class="input-group mb-3">
+            <input type="text" name="q" class="form-control" placeholder="Enter username" value="{{ query }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+    {% if query %}
+        {% if user_result %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user_result.username }}</h5>
+                    <p><strong>First name:</strong> {{ user_result.first_name }}</p>
+                    <p><strong>Last name:</strong> {{ user_result.last_name }}</p>
+                    <p><strong>Email:</strong> {{ user_result.email }}</p>
+                    {% if user_result.user_profile %}
+                        <p><strong>Role:</strong> {{ user_result.user_profile.get_role_display }}</p>
+                        {% if user_result.user_profile.profile_picture %}
+                            <img src="{{ user_result.user_profile.profile_picture.url }}" alt="Profile Picture" style="max-width:120px;">
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning mt-4">No user found with username "{{ query }}".</div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

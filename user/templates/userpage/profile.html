@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">My Profile</h1>
+    <div class="card mb-4" style="max-width: 500px;">
+        <div class="row g-0">
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                {% if user.user_profile.profile_picture %}
+                    <img src="{{ user.user_profile.profile_picture.url }}" class="img-fluid rounded-circle m-3" alt="Profile Picture" style="max-width: 120px;">
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.username }}" class="img-fluid rounded-circle m-3" alt="Profile Picture" style="max-width: 120px;">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h4 class="card-title">{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
+                    <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                    <p class="card-text"><strong>Role:</strong> {{ user.user_profile.get_role_display }}</p>
+                    <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary mt-2">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
