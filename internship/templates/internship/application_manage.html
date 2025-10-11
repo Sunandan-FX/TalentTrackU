@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Manage Application{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1>Manage Application</h1>
+    <p>Applicant: {{ application.applicant.username }}</p>
+    <p>Internship: {{ application.internship.title }}</p>
+    <p>Current Status: {{ application.get_status_display }}</p>
+    {% if application.resume %}
+        <p><strong>Resume:</strong> <a href="{{ application.resume.url }}" download>Download Resume</a></p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+        <a href="{% url 'internship_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

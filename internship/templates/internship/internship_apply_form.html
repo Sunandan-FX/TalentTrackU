@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Apply for Internship{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Apply for {{ internship.title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Apply</button>
+        <a href="{% url 'internship_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

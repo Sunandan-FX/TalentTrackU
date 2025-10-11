@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Applications for My Internships{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Applications for My Internships</h1>
+    {% if applications %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Internship</th>
+                    <th>Applicant</th>
+                    <th>Status</th>
+                    <th>Applied At</th>
+                    <th>Resume</th>
+                    <th>Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>{{ app.internship.title }}</td>
+                    <td>{{ app.applicant.username }}</td>
+                    <td>{{ app.get_status_display }}</td>
+                    <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if app.resume %}
+                            <a href="{{ app.resume.url }}" download>Download</a>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'internship_application_manage' app.id %}" class="btn btn-outline-primary btn-sm">Manage</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No applications found for your internships.</p>
+    {% endif %}
+</div>
+{% endblock %}
