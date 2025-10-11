@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to Opportunity{% endblock %}
+{% block content %}
+<div class="container text-center my-5" id="home">
+    <h1>Welcome to Opportunity</h1>
+    <p>Explore opportunities in jobs, research papers, and internships.</p>
+     {% comment %} {% if user.is_authenticated and user.user_profile.profile_picture %}
+        <img src="{{ user.user_profile.profile_picture.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture" style="max-width: 100px; max-height: 100px; object-fit: cover;"> 
+    {% endif %} {% endcomment %}
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{% url 'job_list' %}#jobs" class="btn btn-primary btn-lg">Browse Jobs</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'research_paper_list' %}#research-papers" class="btn btn-primary btn-lg">View Research Papers</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'internship_list' %}#internships" class="btn btn-primary btn-lg">Explore Internships</a>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+        {% if user.user_profile.role in 'alumni,company' %}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <a href="{% url 'job_post_create' %}" class="btn btn-success me-2">Post New Job</a>
+                    <a href="{% url 'research_paper_post_create' %}" class="btn btn-success me-2">Post Research Paper</a>
+                    <a href="{% url 'internship_post_create' %}" class="btn btn-success">Post Internship</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+    {% comment %} {% if not user.is_authenticated %}
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{% url 'signup' %}" class="btn btn-success btn-lg w-100">Sign Up</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'user_login' %}" class="btn btn-outline-success btn-lg w-100">Log In</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <p class="text-success">You are logged in as {{ user.username }} ({{ user.frontpage_profile.role|title }})!</p> <!-- Updated -->
+                <a href="{% url 'user_logout' %}" class="btn btn-danger btn-lg">Logout</a>
+            </div>
+        </div> 
+    {% endif %} {% endcomment %}
+</div>
+{% endblock %}
