@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Jobs{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Jobs</h1>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'job:job_post_create' %}" class="btn btn-success mb-3">Post New Job</a>
+    {% endif %}
+
+    <div class="row">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if job.image %}
+                        <img src="{{ job.image.url }}" class="card-img-top" alt="{{ job.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ job.title }}</h5>
+                        <p><strong>Company:</strong> {{ job.company }}</p>
+                        <p><strong>Description:</strong> {{ job.description }}</p>
+                        <p><strong>Location:</strong> {{ job.location|default:'-' }}</p>
+                        <p><strong>Salary:</strong> {{ job.salary|default:'-' }}</p>
+                        <p class="text-muted small">Posted: {{ job.created_at|date:"M d, Y" }}</p>
+
+                        {% if user.is_authenticated %}
+                            {% if job.id in applied_jobs %}
+                                <span class="badge bg-success">Applied</span>
+                                {% for application in applications %}
+                                    {% if application.job.id == job.id %}
+                                        <p><strong>Status:</strong> {{ application.get_status_display }}</p>
+                                        {% if application.resume %}
+                                            <p><strong>Your Resume:</strong> <a href="{{ application.resume.url }}" download>Download</a></p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <a href="{% url 'job:job_apply' job.id %}" class="btn btn-primary">Apply</a>
+                            {% endif %}
+
+                            {% if job.posted_by == user %}
+                                          <a href="{% url 'job:job_delete' job.id %}" 
+                                              class="btn btn-danger btn-sm" 
+                                              onclick="return confirm('Are you sure?')">Delete</a>
+                            {% endif %}
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs posted yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

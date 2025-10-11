@@ -1,0 +1,50 @@
+No changes needed as the file already uses the correct namespace for job_application_manage.
+{% extends 'base.html' %}
+{% block title %}Applications to My Jobs{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Applications to My Job Posts</h1>
+    {% if applications %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Job</th>
+                    <th>Applicant</th>
+                    <th>Status</th>
+                    <th>Applied At</th>
+                    <th>Resume</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>{{ app.job.title }}</td>
+                    <td>{{ app.applicant.username }}</td>
+                    <td>{{ app.get_status_display }}</td>
+                    <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if app.resume %}
+                            <a href="{{ app.resume.url }}" download>Download</a>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'job:job_application_manage' app.id %}">
+                            {% csrf_token %}
+                            <select name="status" class="form-select form-select-sm mb-2">
+                                <option value="pending" {% if app.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="accepted" {% if app.status == 'accepted' %}selected{% endif %}>Accepted</option>
+                                <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No applications to your jobs found.</p>
+    {% endif %}
+</div>
+{% endblock %}

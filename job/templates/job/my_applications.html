@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}My Job Applications{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">My Job Applications</h1>
+    {% if applications %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Job</th>
+                    <th>Status</th>
+                    <th>Applied At</th>
+                    <th>Resume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>{{ app.job.title }}</td>
+                    <td>{{ app.get_status_display }}</td>
+                    <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if app.resume %}
+                            <a href="{{ app.resume.url }}" download>Download</a>
+                        {% else %}-{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No job applications found.</p>
+    {% endif %}
+</div>
+{% endblock %}
