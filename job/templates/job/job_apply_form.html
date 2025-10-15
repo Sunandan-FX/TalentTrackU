@@ -1,13 +1,486 @@
 {% extends 'base.html' %}
 {% block title %}Apply for Job{% endblock %}
 {% block content %}
-<div class="container my-5">
-    <h1 class="mb-4">Apply for {{ job.title }}</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Apply</button>
-    <a href="{% url 'job:job_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+<style>
+    .apply-job-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+    
+    .apply-job-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .apply-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+    
+    .apply-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .apply-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .job-info {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+    }
+    
+    .job-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .job-company {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .apply-form {
+        margin-top: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input {
+        position: absolute;
+        left: -9999px;
+    }
+    
+    .file-input-label {
+        display: block;
+        padding: 1rem;
+        background: var(--light-bg);
+        border: 2px dashed var(--border-color);
+        border-radius: 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--secondary-color);
+    }
+    
+    .file-input-label:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+    
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    }
+    
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        width: 100%;
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(100, 116, 139, 0.3);
+        color: white;
+    }
+    
+    /* Animated Background Elements */
+    .animated-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .shape-1 {
+        width: 120px;
+        height: 120px;
+        top: 15%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 80px;
+        height: 80px;
+        top: 65%;
+        left: 85%;
+        animation-delay: 2s;
+    }
+    
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        top: 35%;
+        left: 80%;
+        animation-delay: 4s;
+    }
+    
+    .job-apply-icon {
+        position: absolute;
+        font-size: 2rem;
+        color: var(--primary-color);
+        opacity: 0.2;
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .icon-1 {
+        top: 25%;
+        right: 15%;
+        animation-delay: 1s;
+    }
+    
+    .icon-2 {
+        bottom: 30%;
+        left: 15%;
+        animation-delay: 3s;
+    }
+    
+    .icon-3 {
+        top: 70%;
+        right: 20%;
+        animation-delay: 2s;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+    
+    /* Form field enhancements */
+    .form-fields p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-fields label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+    
+    .form-fields input, .form-fields select, .form-fields textarea {
+        width: 100%;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .apply-job-content {
+            margin: 1rem;
+        }
+        
+        .apply-card {
+            padding: 2rem;
+        }
+        
+        .floating-shape {
+            display: none;
+        }
+        
+        .job-apply-icon {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="apply-job-container">
+    <!-- Animated Background Elements -->
+    <div class="animated-background">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="job-apply-icon icon-1">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="job-apply-icon icon-2">
+            <i class="fas fa-file-contract"></i>
+        </div>
+        <div class="job-apply-icon icon-3">
+            <i class="fas fa-user-tie"></i>
+        </div>
+    </div>
+    
+    <div class="apply-job-content">
+        <div class="apply-card">
+            <div class="apply-header">
+                <h1>Apply for Job</h1>
+                <p class="text-muted">Submit your application for this exciting career opportunity</p>
+            </div>
+            
+            <div class="job-info">
+                <div class="job-title">{{ job.title }}</div>
+                <div class="job-company">{{ job.company }}</div>
+            </div>
+            
+            <div class="apply-form">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Custom form rendering to maintain original structure -->
+                    <div class="form-fields">
+                        {{ form.as_p }}
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Application
+                    </button>
+                    <a href="{% url 'job:job_list' %}" class="btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel Application
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add subtle interaction effects to form inputs
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'scale(1.02)';
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'scale(1)';
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+            
+            // Add form-control class to all inputs
+            if (!this.classList.contains('form-control')) {
+                this.classList.add('form-control');
+            }
+        });
+        
+        // Enhance file input
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'file-input-wrapper';
+            
+            const label = document.createElement('label');
+            label.className = 'file-input-label';
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Choose File';
+            
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            wrapper.appendChild(label);
+            
+            input.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    label.innerHTML = '<i class="fas fa-check"></i> ' + this.files[0].name;
+                    label.style.borderColor = 'var(--success-color)';
+                    label.style.color = 'var(--success-color)';
+                }
+            });
+        });
+        
+        // Style form labels and inputs from Django's as_p rendering
+        const formFields = document.querySelectorAll('.form-fields p');
+        formFields.forEach(field => {
+            const label = field.querySelector('label');
+            const input = field.querySelector('input, select, textarea');
+            
+            if (label && input) {
+                label.classList.add('form-label');
+                
+                // Add icons based on field type
+                if (input.type === 'file') {
+                    // Already handled above
+                } else if (input.type === 'email') {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-envelope input-icon';
+                    field.appendChild(icon);
+                } else if (input.type === 'text') {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-edit input-icon';
+                    field.appendChild(icon);
+                }
+            }
+        });
+        
+        // Add loading state to apply button
+        const applyForm = document.querySelector('form');
+        const applyBtn = document.querySelector('.btn-primary');
+        
+        if (applyForm && applyBtn) {
+            applyForm.addEventListener('submit', function() {
+                applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting Application...';
+                applyBtn.disabled = true;
+            });
+        }
+        
+        // Add animation to the apply card
+        const applyCard = document.querySelector('.apply-card');
+        if (applyCard) {
+            applyCard.style.opacity = '0';
+            applyCard.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                applyCard.style.transition = 'all 0.5s ease';
+                applyCard.style.opacity = '1';
+                applyCard.style.transform = 'translateY(0)';
+            }, 300);
+        }
+        
+        // Add hover effects to buttons
+        const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Form validation enhancement
+        if (applyForm) {
+            applyForm.addEventListener('submit', function(e) {
+                const requiredFields = this.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = 'var(--danger-color)';
+                        
+                        // Add shake animation
+                        field.classList.add('shake');
+                        setTimeout(() => {
+                            field.classList.remove('shake');
+                        }, 500);
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    applyBtn.disabled = false;
+                    applyBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+                }
+            });
+        }
+    });
+    
+    // Add shake animation for validation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            pointer-events: none;
+        }
+        .form-fields p {
+            position: relative;
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 {% endblock %}
