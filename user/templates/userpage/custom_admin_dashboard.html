@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Custom Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1>Custom Admin Dashboard</h1>
+    
+    <!-- Notification Bar -->
+    <div class="notification-bar" style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <h3>Recent Activity (Last 24 Hours)</h3>
+        {% if recent_activity %}
+            <ul>
+                {% for activity in recent_activity %}
+                    <li>
+                        {{ activity.applicant.username }} applied for 
+                        {% if activity.job %}{{ activity.job.title }}{% elif activity.internship %}{{ activity.internship.title }}{% elif activity.paper %}{{ activity.paper.title }}{% endif %}
+                        (Status: {{ activity.get_status_display }}) at {{ activity.applied_at|date:"M d, Y H:i" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No recent activity.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Jobs -->
+    <h2>Jobs</h2>
+    {% if jobs %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Posted By</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.title }}</td>
+                        <td>{{ job.posted_by.username }}</td>
+                        <td>{{ job.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'custom_admin_delete_post' 'job' job.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No jobs posted.</p>
+    {% endif %}
+    
+    <!-- Research Papers -->
+    <h2>Research Papers</h2>
+    {% if papers %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Posted By</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                    <tr>
+                        <td>{{ paper.title }}</td>
+                        <td>{{ paper.posted_by.username }}</td>
+                        <td>{{ paper.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'custom_admin_delete_post' 'paper' paper.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No research papers posted.</p>
+    {% endif %}
+    
+    <!-- Internships -->
+    <h2>Internships</h2>
+    {% if internships %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Posted By</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internship in internships %}
+                    <tr>
+                        <td>{{ internship.title }}</td>
+                        <td>{{ internship.posted_by.username }}</td>
+                        <td>{{ internship.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'custom_admin_delete_post' 'internship' internship.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No internships posted.</p>
+    {% endif %}
+    
+    <!-- Applications -->
+    <h2>Applications</h2>
+    {% if applications %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Opportunity</th>
+                    <th>Status</th>
+                    <th>Applied At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td>{{ app.applicant.username }}</td>
+                        <td>
+                            {% if app.job %}{{ app.job.title }}{% elif app.internship %}{{ app.internship.title }}{% elif app.paper %}{{ app.paper.title }}{% endif %}
+                        </td>
+                        <td>{{ app.get_status_display }}</td>
+                        <td>{{ app.applied_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'custom_admin_manage_application' app.id %}" class="btn btn-primary btn-sm">Manage</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No applications.</p>
+    {% endif %}
+</div>
+{% endblock %}
