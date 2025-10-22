@@ -16,7 +16,7 @@ class Internship(models.Model):
         return self.title
 
 
-# Dedicated application model for internships
+
 class InternshipApplication(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),
