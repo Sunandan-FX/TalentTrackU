@@ -189,7 +189,7 @@
         color: white;
     }
     
-    /* Animated Background Elements */
+    
     .animated-background {
         position: absolute;
         top: 0;
@@ -266,7 +266,7 @@
         }
     }
     
-    /* Responsive Design */
+    
     @media (max-width: 768px) {
         .manage-application-content {
             margin: 1rem;
@@ -297,7 +297,7 @@
 </style>
 
 <div class="manage-application-container">
-    <!-- Animated Background Elements -->
+   
     <div class="animated-background">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -370,7 +370,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add animation to the application card
+       
         const applicationCard = document.querySelector('.application-card');
         if (applicationCard) {
             applicationCard.style.opacity = '0';
@@ -383,7 +383,7 @@
             }, 300);
         }
         
-        // Add loading states to action buttons
+        
         const actionButtons = document.querySelectorAll('.btn-success, .btn-danger');
         actionButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -401,7 +401,7 @@
                     btn.disabled = true;
                 });
                 
-                // Re-enable after 3 seconds if still on page (fallback)
+                
                 setTimeout(() => {
                     actionButtons.forEach(btn => {
                         btn.disabled = false;
