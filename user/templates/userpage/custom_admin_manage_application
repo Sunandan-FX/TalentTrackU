@@ -8,3 +8,11 @@
         {% if application.job %}{{ application.job.title }}{% elif application.internship %}{{ application.internship.title }}{% elif application.paper %}{{ application.paper.title }}{% endif %}
     </p>
     <p>Current Status: {{ application.get_status_display }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+        <a href="{% url 'custom_admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
