@@ -1,0 +1,140 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon users">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-number">{{ total_users }}</div>
+        <div class="stat-label">Total Users</div>
+        <div style="color: var(--success); font-size: 0.875rem; margin-top: 0.5rem;">
+            +{{ recent_users }} this week
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon jobs">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="stat-number">{{ total_jobs }}</div>
+        <div class="stat-label">Job Postings</div>
+        <div style="color: var(--success); font-size: 0.875rem; margin-top: 0.5rem;">
+            +{{ recent_jobs }} this week
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon applications">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="stat-number">{{ total_applications }}</div>
+        <div class="stat-label">Applications</div>
+        <div style="color: var(--success); font-size: 0.875rem; margin-top: 0.5rem;">
+            +{{ recent_applications }} this week
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon papers">
+            <i class="fas fa-file-pdf"></i>
+        </div>
+        <div class="stat-number">{{ total_papers }}</div>
+        <div class="stat-label">Research Papers</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+            Total papers uploaded
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <!-- Recent Users -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Recent Users</h3>
+        </div>
+        <div class="card-body">
+            {% for user in recent_user_list %}
+            <div style="display: flex; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; {% if forloop.last %}border-bottom: none;{% endif %}">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--info); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; margin-right: 0.75rem;">
+                    {{ user.username|first|upper }}
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600;">{{ user.username }}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                        {{ user.user_profile.get_role_display }}
+                    </div>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                    {{ user.date_joined|date:"M d" }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Applications -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Recent Applications</h3>
+        </div>
+        <div class="card-body">
+            {% for app in recent_applications_list %}
+            <div style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; {% if forloop.last %}border-bottom: none;{% endif %}">
+                <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 0.5rem;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 0.875rem;">{{ app.job.title }}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.75rem;">by {{ app.applicant.username }}</div>
+                    </div>
+                    <span class="badge badge-{% if app.status == 'accepted' %}success{% elif app.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                        {{ app.get_status_display }}
+                    </span>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.75rem;">
+                    {{ app.applied_at|date:"M d, Y H:i" }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- User Roles Distribution -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">User Roles Distribution</h3>
+        </div>
+        <div class="card-body">
+            {% for role in role_distribution %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb; {% if forloop.last %}border-bottom: none;{% endif %}">
+                <span style="text-transform: capitalize; font-weight: 500;">{{ role.role }}</span>
+                <span style="font-weight: 600; color: var(--info);">{{ role.count }} users</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Application Status Distribution -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Application Status</h3>
+        </div>
+        <div class="card-body">
+            {% for status in app_status_distribution %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb; {% if forloop.last %}border-bottom: none;{% endif %}">
+                <span style="text-transform: capitalize; font-weight: 500;">{{ status.status }}</span>
+                <span style="font-weight: 600; color: 
+                    {% if status.status == 'accepted' %}var(--success)
+                    {% elif status.status == 'rejected' %}var(--danger)
+                    {% else %}var(--warning){% endif %};">
+                    {{ status.count }} applications
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
