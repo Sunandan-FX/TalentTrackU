@@ -1,0 +1,74 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Applications Management{% endblock %}
+{% block page_title %}Applications Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Applications ({{ applications.count }})</h3>
+    </div>
+    <div class="card-body">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Job Position</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                    <th>Resume</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--info); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; margin-right: 0.75rem;">
+                                {{ app.applicant.username|first|upper }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">{{ app.applicant.username }}</div>
+                                <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    {{ app.applicant.email }}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">{{ app.job.title }}</div>
+                    </td>
+                    <td>{{ app.job.company }}</td>
+                    <td>
+                        <span class="badge badge-{% if app.status == 'accepted' %}success{% elif app.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                            {{ app.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if app.resume %}
+                            <a href="{{ app.resume.url }}" target="_blank" style="color: var(--info); text-decoration: none;">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        {% else %}
+                            <span style="color: var(--text-secondary);">No resume</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="{% url 'admin_panel:admin_edit_application' app.id %}" class="btn-action btn-edit" title="Edit Application">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:admin_delete_application' app.id %}" class="btn-action btn-delete" title="Delete Application">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

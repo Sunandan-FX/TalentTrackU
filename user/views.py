@@ -115,3 +115,36 @@ def user_search(request):
         except User.DoesNotExist:
             user_result = None
     return render(request, 'userpage/user_search.html', {'query': query, 'user_result': user_result})
+
+def user_login(request):
+    # If user is already authenticated and superuser, redirect to admin
+    if request.user.is_authenticated and request.user.is_superuser:
+        return redirect('admin_panel:admin_dashboard')
+    
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            
+            if user:
+                login(request, user)
+                
+                # ✅ SUPERUSER REDIRECTION
+                if user.is_superuser:
+                    messages.success(request, f"Welcome Administrator {user.username}!")
+                    return redirect('admin_panel:admin_dashboard')
+                
+                # Regular user redirection
+                messages.success(request, f"Welcome back, {user.username}!")
+                next_url = request.GET.get('next', 'job:job_list')
+                return redirect(next_url)
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = LoginForm()
+    
+    return render(request, 'userpage/login.html', {'form': form})

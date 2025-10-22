@@ -5,6 +5,8 @@ from django.contrib import messages
 from .models import Job, Application
 from .forms import JobPostForm
 from .forms import ApplicationForm
+from django.core.mail import send_mail
+from django.conf import settings
 
 def job_list(request):
     jobs = Job.objects.all().order_by('-created_at')
@@ -38,7 +40,7 @@ def job_apply(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     if Application.objects.filter(job=job, applicant=request.user).exists():
         messages.error(request, "You have already applied for this job.")
-    return redirect('job:job_list')
+        return redirect('job:job_list')
     if request.method == 'POST':
         form = ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -63,37 +65,31 @@ def job_delete(request, job_id):
 @login_required
 def job_application_manage(request, application_id):
     application = get_object_or_404(Application, id=application_id, job__posted_by=request.user)
+    
     if request.method == 'POST':
         action = request.POST.get('action')
+        old_status = application.status
+        
         if action in ['accept', 'reject']:
             application.status = 'accepted' if action == 'accept' else 'rejected'
             application.save()
-            messages.success(request, f"Application {application.status} successfully.")
+            
+            messages.success(request, f"Application {application.status} successfully!")
         else:
             messages.error(request, "Invalid action.")
-    return redirect('job:job_list')
-    return render(request, 'job/application_manage.html', {'application': application})
+        
+        return redirect('job:my_post_job_applications')
+    
+    return render(request, 'job/application_manager.html', {'application': application})
 
-# @login_required
-# def job_application_manage(request, application_id):
-#     application = get_object_or_404(Application, id=application_id, job__posted_by=request.user)
-#     if request.method == 'POST':
-#         action = request.POST.get('action')
-#         if action in ['accept', 'reject']:
-#             application.status = 'accepted' if action == 'accept' else 'rejected'
-#             application.save()
-#             messages.success(request, f"Application {application.status} successfully.")
-#         else:
-#             messages.error(request, "Invalid action.")
-#         return redirect('job_list')
-#     return render(request, 'job/application_manage.html', {'application': application})
+
 @login_required
 def my_job_applications(request):
     applications = Application.objects.filter(applicant=request.user).select_related('job')
     return render(request, 'job/my_applications.html', {'applications': applications})
 
 # Post Owner: View all applications to jobs posted by the current user
-@login_required
 def my_post_job_applications(request):
+    """View all applications to jobs posted by the current user"""
     applications = Application.objects.filter(job__posted_by=request.user).select_related('job', 'applicant')
     return render(request, 'job/my_post_applications.html', {'applications': applications})

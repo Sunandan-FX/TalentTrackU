@@ -1,50 +1,606 @@
-No changes needed as the file already uses the correct namespace for job_application_manage.
 {% extends 'base.html' %}
 {% block title %}Applications to My Jobs{% endblock %}
 {% block content %}
-<div class="container my-5">
-    <h1 class="mb-4">Applications to My Job Posts</h1>
-    {% if applications %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Job</th>
-                    <th>Applicant</th>
-                    <th>Status</th>
-                    <th>Applied At</th>
-                    <th>Resume</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for app in applications %}
-                <tr>
-                    <td>{{ app.job.title }}</td>
-                    <td>{{ app.applicant.username }}</td>
-                    <td>{{ app.get_status_display }}</td>
-                    <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
-                    <td>
-                        {% if app.resume %}
-                            <a href="{{ app.resume.url }}" download>Download</a>
-                        {% else %}-{% endif %}
-                    </td>
-                    <td>
-                        <form method="post" action="{% url 'job:job_application_manage' app.id %}">
-                            {% csrf_token %}
-                            <select name="status" class="form-select form-select-sm mb-2">
-                                <option value="pending" {% if app.status == 'pending' %}selected{% endif %}>Pending</option>
-                                <option value="accepted" {% if app.status == 'accepted' %}selected{% endif %}>Accepted</option>
-                                <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No applications to your jobs found.</p>
-    {% endif %}
+<style>
+    .job-applications-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+    
+    .job-applications-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .job-applications-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .job-applications-header h1 {
+        color: #2563eb;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+    }
+    
+    .job-applications-header p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    
+    .applications-table-container {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .applications-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .applications-table thead {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+    
+    .applications-table th {
+        color: white;
+        font-weight: 600;
+        padding: 1.5rem 1rem;
+        text-align: left;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .applications-table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+    
+    .applications-table tbody tr:hover {
+        background: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .applications-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    
+    .applications-table td {
+        padding: 1.5rem 1rem;
+        color: #1e293b;
+        font-weight: 500;
+        vertical-align: middle;
+    }
+    
+    .job-title {
+        font-weight: 600;
+        color: #2563eb;
+    }
+    
+    .applicant-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .applicant-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .applicant-name {
+        font-weight: 600;
+        color: #1e293b;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: capitalize;
+    }
+    
+    .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    .status-accepted {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .status-rejected {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .resume-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+    
+    .resume-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+    
+    .status-form {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .form-select {
+        padding: 0.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-select:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .update-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .update-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    .no-applications {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #64748b;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+    
+    .no-applications i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #64748b;
+        opacity: 0.5;
+    }
+    
+    .no-applications h3 {
+        color: #1e293b;
+        margin-bottom: 1rem;
+    }
+    
+    .promote-jobs-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        text-decoration: none;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    
+    .promote-jobs-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+    
+    /* Animated Background Elements */
+    .animated-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .shape-1 {
+        width: 120px;
+        height: 120px;
+        top: 10%;
+        left: 8%;
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 80px;
+        height: 80px;
+        top: 70%;
+        left: 85%;
+        animation-delay: 2s;
+    }
+    
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        top: 40%;
+        left: 90%;
+        animation-delay: 4s;
+    }
+    
+    .job-applications-icon {
+        position: absolute;
+        font-size: 2rem;
+        color: #2563eb;
+        opacity: 0.2;
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .icon-1 {
+        top: 20%;
+        right: 12%;
+        animation-delay: 1s;
+    }
+    
+    .icon-2 {
+        bottom: 25%;
+        left: 10%;
+        animation-delay: 3s;
+    }
+    
+    .icon-3 {
+        top: 65%;
+        right: 18%;
+        animation-delay: 2s;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+    
+    /* Stats Overview */
+    .stats-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border-top: 4px solid #2563eb;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .job-applications-content {
+            margin: 1rem;
+        }
+        
+        .job-applications-header h1 {
+            font-size: 2rem;
+        }
+        
+        .applications-table-container {
+            overflow-x: auto;
+        }
+        
+        .applications-table {
+            min-width: 800px;
+        }
+        
+        .applications-table th,
+        .applications-table td {
+            padding: 1rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .status-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .stats-overview {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .floating-shape {
+            display: none;
+        }
+        
+        .job-applications-icon {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="job-applications-container">
+    <!-- Animated Background Elements -->
+    <div class="animated-background">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="job-applications-icon icon-1">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="job-applications-icon icon-2">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <div class="job-applications-icon icon-3">
+            <i class="fas fa-handshake"></i>
+        </div>
+    </div>
+    
+    <div class="job-applications-content">
+        <div class="job-applications-header">
+            <h1>Applications to My Job Posts</h1>
+            <p class="text-muted">Manage and review all applications for your posted jobs</p>
+        </div>
+        
+        {% if applications %}
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalApplications">{{ applications|length }}</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingApplications">0</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="acceptedApplications">0</div>
+                    <div class="stat-label">Accepted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="rejectedApplications">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            
+            <div class="applications-table-container">
+                <table class="applications-table">
+                    <thead>
+                        <tr>
+                            <th>Job Position</th>
+                            <th>Applicant</th>
+                            <th>Status</th>
+                            <th>Date Applied</th>
+                            <th>Resume</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>
+                                <span class="job-title">{{ app.job.title }}</span>
+                                <br>
+                                <small class="text-muted">{{ app.job.company }}</small>
+                            </td>
+                            <td>
+                                <div class="applicant-info">
+                                    <div class="applicant-avatar">
+                                        {{ app.applicant.username|first|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="applicant-name">{{ app.applicant.username }}</div>
+                                        <small class="text-muted">
+                                            {% if app.applicant.first_name and app.applicant.last_name %}
+                                                {{ app.applicant.first_name }} {{ app.applicant.last_name }}
+                                            {% else %}
+                                                Name not provided
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ app.status }}">
+                                    <i class="fas 
+                                        {% if app.status == 'accepted' %}fa-check-circle
+                                        {% elif app.status == 'rejected' %}fa-times-circle
+                                        {% elif app.status == 'pending' %}fa-clock
+                                        {% else %}fa-eye{% endif %}">
+                                    </i>
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="applied-date">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ app.applied_at|date:"M d, Y" }}
+                                </div>
+                                <small class="text-muted">{{ app.applied_at|date:"H:i" }}</small>
+                            </td>
+                            <td>
+                                {% if app.resume %}
+                                    <a href="{{ app.resume.url }}" download class="resume-download">
+                                        <i class="fas fa-download"></i>
+                                        Resume
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'job:job_application_manage' app.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Manage
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="no-applications">
+                <i class="fas fa-users-slash"></i>
+                <h3>No Applications Yet</h3>
+                <p>You haven't received any applications for your jobs yet.</p>
+                <a href="{% url 'job:job_list' %}" class="promote-jobs-btn">
+                    <i class="fas fa-eye"></i>
+                    View Your Jobs
+                </a>
+            </div>
+        {% endif %}
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calculate and animate stats
+        function calculateStats() {
+            let pending = 0;
+            let accepted = 0;
+            let rejected = 0;
+            
+            document.querySelectorAll('.status-badge').forEach(badge => {
+                const status = badge.className.match(/status-(\w+)/);
+                if (status) {
+                    switch(status[1]) {
+                        case 'pending':
+                            pending++;
+                            break;
+                        case 'accepted':
+                            accepted++;
+                            break;
+                        case 'rejected':
+                            rejected++;
+                            break;
+                    }
+                }
+            });
+            
+            // Animate stats counting
+            animateCounter('pendingApplications', pending);
+            animateCounter('acceptedApplications', accepted);
+            animateCounter('rejectedApplications', rejected);
+        }
+        
+        function animateCounter(elementId, target) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 50);
+        }
+        
+        // Add animation to table rows
+        const tableRows = document.querySelectorAll('.applications-table tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+        
+        // Calculate stats after animations
+        setTimeout(calculateStats, 500);
+    });
+</script>
 {% endblock %}
