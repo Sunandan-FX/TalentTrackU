@@ -349,7 +349,7 @@
 </style>
 
 <div class="job-applications-container">
-    <!-- Animated Background Elements -->
+   
     <div class="animated-background">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -372,7 +372,7 @@
         </div>
         
         {% if applications %}
-            <!-- Stats Overview -->
+           
             <div class="stats-overview">
                 <div class="stat-card">
                     <div class="stat-number" id="totalApplications">{{ applications|length }}</div>
@@ -459,7 +459,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Calculate and animate stats
+        
         function calculateStats() {
             let pending = 0;
             let accepted = 0;
@@ -482,7 +482,7 @@
                 }
             });
             
-            // Animate stats counting
+            
             animateCounter('pendingApplications', pending);
             animateCounter('acceptedApplications', accepted);
             animateCounter('rejectedApplications', rejected);
@@ -505,7 +505,7 @@
             }, 50);
         }
         
-        // Add animation to table rows
+        
         const tableRows = document.querySelectorAll('.applications-table tbody tr');
         tableRows.forEach((row, index) => {
             row.style.opacity = '0';
@@ -544,10 +544,10 @@
             });
         });
         
-        // Calculate stats after animations
+        
         setTimeout(calculateStats, 500);
         
-        // Add pulse animation to the no applications section
+        
         const noApplications = document.querySelector('.no-applications');
         if (noApplications) {
             noApplications.style.opacity = '0';
