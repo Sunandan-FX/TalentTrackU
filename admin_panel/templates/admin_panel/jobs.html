@@ -1,0 +1,66 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Jobs Management{% endblock %}
+{% block page_title %}Jobs Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Job Postings ({{ jobs.count }})</h3>
+    </div>
+    <div class="card-body">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Posted By</th>
+                    <th>Location</th>
+                    <th>Salary</th>
+                    <th>Date Posted</th>
+                    <th>Applications</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">{{ job.title }}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ job.description|truncatewords:10 }}
+                        </div>
+                    </td>
+                    <td>{{ job.company }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--info); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; margin-right: 0.5rem;">
+                                {{ job.posted_by.username|first|upper }}
+                            </div>
+                            {{ job.posted_by.username }}
+                        </div>
+                    </td>
+                    <td>{{ job.location|default:"-" }}</td>
+                    <td>{{ job.salary|default:"-" }}</td>
+                    <td>{{ job.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="badge badge-info">
+                            {{ job.job_applications.count }} apps
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="{% url 'admin_panel:admin_edit_job' job.id %}" class="btn-action btn-edit" title="Edit Job">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:admin_delete_job' job.id %}" class="btn-action btn-delete" title="Delete Job">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
