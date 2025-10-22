@@ -1,0 +1,61 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Research Papers Management{% endblock %}
+{% block page_title %}Research Papers Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Research Papers ({{ papers.count }})</h3>
+    </div>
+    <div class="card-body">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Paper Title</th>
+                    <th>Author</th>
+                    <th>Field</th>
+                    <th>Posted By</th>
+                    <th>Date Posted</th>
+                    <th>File</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">{{ paper.title }}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ paper.abstract|truncatewords:15 }}
+                        </div>
+                    </td>
+                    <td>{{ paper.author_name }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ paper.field }}</span>
+                    </td>
+                    <td>{{ paper.posted_by.username }}</td>
+                    <td>{{ paper.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if paper.pdf_file %}
+                            <a href="{{ paper.pdf_file.url }}" target="_blank" style="color: var(--info); text-decoration: none;">
+                                <i class="fas fa-file-pdf"></i> View PDF
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="{% url 'admin_panel:admin_edit_research_paper' paper.id %}" class="btn-action btn-edit" title="Edit Paper">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:admin_delete_research_paper' paper.id %}" class="btn-action btn-delete" title="Delete Paper">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
