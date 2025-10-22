@@ -1,8 +1,8 @@
 from job.models import Application
 from django import forms
-# Import the new model for internship applications
+
 from .models import InternshipApplication
-# Form for internship application (with resume)
+
 class InternshipApplicationForm(forms.ModelForm):
     class Meta:
         model = InternshipApplication
