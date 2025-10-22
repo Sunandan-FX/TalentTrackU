@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<style>
+    .profile-edit-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+    
+    .profile-edit-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .profile-edit-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-edit-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-picture-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary-color);
+        margin: 0 auto 1rem;
+        display: block;
+    }
+    
+    .no-profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: var(--secondary-color);
+        border: 4px dashed var(--border-color);
+    }
+    
+    .profile-edit-form {
+        margin-top: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control, select, textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-control:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input {
+        position: absolute;
+        left: -9999px;
+    }
+    
+    .file-input-label {
+        display: block;
+        padding: 1rem;
+        background: var(--light-bg);
+        border: 2px dashed var(--border-color);
+        border-radius: 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--secondary-color);
+    }
+    
+    .file-input-label:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+    
+    .btn-success {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--success-color), #059669);
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-secondary {
+        width: 100%;
+        padding: 1rem;
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(100, 116, 139, 0.3);
+        color: white;
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-weight: 500;
+    }
+    
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+        border-left: 4px solid var(--success-color);
+    }
+    
+    .alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+        border-left: 4px solid var(--danger-color);
+    }
+    
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+        border-left: 4px solid var(--warning-color);
+    }
+    
+    .alert-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info-color);
+        border-left: 4px solid var(--info-color);
+    }
+    
+    /* Animated Background Elements */
+    .animated-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .shape-1 {
+        width: 160px;
+        height: 160px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 100px;
+        height: 100px;
+        top: 70%;
+        left: 80%;
+        animation-delay: 2s;
+    }
+    
+    .shape-3 {
+        width: 120px;
+        height: 120px;
+        top: 40%;
+        left: 85%;
+        animation-delay: 4s;
+    }
+    
+    .profile-icon {
+        position: absolute;
+        font-size: 2rem;
+        color: var(--primary-color);
+        opacity: 0.2;
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .icon-1 {
+        top: 20%;
+        right: 15%;
+        animation-delay: 1s;
+    }
+    
+    .icon-2 {
+        bottom: 20%;
+        left: 15%;
+        animation-delay: 3s;
+    }
+    
+    .icon-3 {
+        top: 60%;
+        right: 25%;
+        animation-delay: 2s;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+    
+    /* Form field enhancements */
+    .form-field {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-field label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+    
+    .form-field input, .form-field select, .form-field textarea {
+        width: 100%;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .profile-edit-card {
+            margin: 1rem;
+            padding: 2rem;
+        }
+        
+        .floating-shape {
+            display: none;
+        }
+        
+        .profile-icon {
+            font-size: 1.5rem;
+        }
+        
+        .profile-picture, .no-profile-picture {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+
+<div class="profile-edit-container">
+    <!-- Animated Background Elements -->
+    <div class="animated-background">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="profile-icon icon-1">
+            <i class="fas fa-user-edit"></i>
+        </div>
+        <div class="profile-icon icon-2">
+            <i class="fas fa-id-card"></i>
+        </div>
+        <div class="profile-icon icon-3">
+            <i class="fas fa-camera"></i>
+        </div>
+    </div>
+    
+    <div class="profile-edit-card">
+        <div class="profile-edit-header">
+            <h1>Edit Your Profile</h1>
+            <p class="text-muted">Update your personal information and profile picture</p>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas 
+                        {% if message.tags == 'success' %}fa-check-circle
+                        {% elif message.tags == 'error' %}fa-exclamation-circle
+                        {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                        {% else %}fa-info-circle{% endif %}">
+                    </i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="profile-picture-section">
+            {% if user.user_profile.profile_picture %}
+                <img src="{{ user.user_profile.profile_picture.url }}" class="profile-picture" alt="Profile Picture">
+            {% else %}
+                <div class="no-profile-picture">
+                    <i class="fas fa-user fa-3x"></i>
+                </div>
+                <p class="text-muted">No profile picture set.</p>
+            {% endif %}
+        </div>
+        
+        <div class="profile-edit-form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Custom form rendering to maintain original structure -->
+                <div class="form-fields">
+                    {{ form.as_p }}
+                </div>
+                
+                <button type="submit" class="btn-success">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="{% url 'home' %}" class="btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add subtle interaction effects to form inputs
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'scale(1.02)';
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'scale(1)';
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Enhance file input
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'file-input-wrapper';
+            
+            const label = document.createElement('label');
+            label.className = 'file-input-label';
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Choose Profile Picture';
+            
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            wrapper.appendChild(label);
+            
+            input.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    label.innerHTML = '<i class="fas fa-check"></i> ' + this.files[0].name;
+                    label.style.borderColor = 'var(--success-color)';
+                    label.style.color = 'var(--success-color)';
+                }
+            });
+        });
+        
+        // Style form labels and inputs from Django's as_p rendering
+        const formFields = document.querySelectorAll('.form-fields p');
+        formFields.forEach(field => {
+            field.classList.add('form-field');
+            
+            const label = field.querySelector('label');
+            const input = field.querySelector('input, select, textarea');
+            
+            if (label && input) {
+                label.classList.add('form-label');
+                input.classList.add('form-control');
+                
+                // Add icons based on field type
+                if (input.type === 'email') {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-envelope input-icon';
+                    field.appendChild(icon);
+                } else if (input.type === 'file') {
+                    // Already handled above
+                } else if (input.type === 'text') {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-user input-icon';
+                    field.appendChild(icon);
+                }
+            }
+        });
+        
+        // Add loading state to save button
+        const saveForm = document.querySelector('form');
+        const saveBtn = document.querySelector('.btn-success');
+        
+        if (saveForm && saveBtn) {
+            saveForm.addEventListener('submit', function() {
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Changes...';
+                saveBtn.disabled = true;
+            });
+        }
+    });
+</script>
+{% endblock %}
