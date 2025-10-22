@@ -151,7 +151,7 @@
         color: white;
     }
     
-    /* Animated Background Elements */
+    
     .animated-background {
         position: absolute;
         top: 0;
@@ -228,7 +228,7 @@
         }
     }
     
-    /* Form field enhancements */
+    
     .form-fields p {
         margin-bottom: 1.5rem;
     }
@@ -244,7 +244,7 @@
         width: 100%;
     }
     
-    /* Character counter for textareas */
+    
     .char-counter {
         text-align: right;
         font-size: 0.8rem;
@@ -252,7 +252,7 @@
         margin-top: 0.25rem;
     }
     
-    /* Responsive Design */
+    
     @media (max-width: 768px) {
         .post-job-content {
             margin: 1rem;
@@ -273,7 +273,7 @@
 </style>
 
 <div class="post-job-container">
-    <!-- Animated Background Elements -->
+    
     <div class="animated-background">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -334,7 +334,7 @@
                 this.parentElement.style.transform = 'translateY(0)';
             });
             
-            // Add form-control class to all inputs
+            
             if (!this.classList.contains('form-control')) {
                 this.classList.add('form-control');
             }
@@ -367,7 +367,7 @@
             });
         });
         
-        // Add character counter for textareas
+      
         const textareas = document.querySelectorAll('textarea');
         textareas.forEach(textarea => {
             const counter = document.createElement('div');
@@ -390,7 +390,7 @@
                 }
             });
             
-            // Trigger input event to show initial count
+            
             textarea.dispatchEvent(new Event('input'));
         });
         
@@ -500,7 +500,7 @@
         }
     });
     
-    // Add shake animation for validation
+    
     const style = document.createElement('style');
     style.textContent = `
         @keyframes shake {
