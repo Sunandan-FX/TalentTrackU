@@ -11,6 +11,7 @@ class Job(models.Model):
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # enter self for identify
     def __str__(self):
         return self.title
 
