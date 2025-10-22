@@ -1,0 +1,71 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Edit User - Admin Panel{% endblock %}
+{% block page_title %}Edit User: {{ user_obj.username }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Edit User Information</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Username</label>
+                    <input type="text" name="username" value="{{ user_obj.username }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Email</label>
+                    <input type="email" name="email" value="{{ user_obj.email }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">First Name</label>
+                    <input type="text" name="first_name" value="{{ user_obj.first_name }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Last Name</label>
+                    <input type="text" name="last_name" value="{{ user_obj.last_name }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Role</label>
+                    <select name="role" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                        <option value="student" {% if user_obj.user_profile.role == 'student' %}selected{% endif %}>Student</option>
+                        <option value="alumni" {% if user_obj.user_profile.role == 'alumni' %}selected{% endif %}>Alumni</option>
+                        <option value="company" {% if user_obj.user_profile.role == 'company' %}selected{% endif %}>Company</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">
+                        <input type="checkbox" name="is_active" {% if user_obj.is_active %}checked{% endif %} 
+                               style="width: 1rem; height: 1rem;">
+                        Active User
+                    </label>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                        When unchecked, user cannot login
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" style="background: var(--info); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-save"></i> Update User
+                </button>
+                <a href="{% url 'admin_panel:admin_users' %}" style="background: var(--text-secondary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

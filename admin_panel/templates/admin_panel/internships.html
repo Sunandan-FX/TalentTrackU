@@ -1,0 +1,53 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Internships Management{% endblock %}
+{% block page_title %}Internships Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Internships ({{ internships.count }})</h3>
+    </div>
+    <div class="card-body">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Internship Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Duration</th>
+                    <th>Posted By</th>
+                    <th>Date Posted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internship in internships %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">{{ internship.title }}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ internship.description|truncatewords:10 }}
+                        </div>
+                    </td>
+                    <td>{{ internship.company }}</td>
+                    <td>{{ internship.location|default:"Remote" }}</td>
+                    <td>{{ internship.duration }}</td>
+                    <td>{{ internship.posted_by.username }}</td>
+                    <td>{{ internship.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <a href="{% url 'admin_panel:admin_edit_internship' internship.id %}" class="btn-action btn-edit" title="Edit Internship">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:admin_delete_internship' internship.id %}" class="btn-action btn-delete" title="Delete Internship">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
