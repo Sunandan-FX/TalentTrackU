@@ -1,0 +1,812 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TalentTrackU - Career Opportunities{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ===== ENHANCED PROFESSIONAL STYLES ===== */
+        
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-color: #2563eb;        /* Main brand blue */
+            --primary-dark: #1d4ed8;         /* Darker blue for hover states */
+            --secondary-color: #64748b;      /* Secondary text color */
+            --accent-color: #f59e0b;         /* Accent color for buttons */
+            --light-bg: #f8fafc;             /* Light background color */
+            --dark-text: #1e293b;            /* Main text color */
+            --border-color: #e2e8f0;         /* Border color */
+            --success-color: #10b981;        /* Success green */
+            --warning-color: #f59e0b;        /* Warning orange */
+            --danger-color: #ef4444;         /* Danger red */
+            --info-color: #3b82f6;           /* Info blue */
+            --footer-bg: #1e293b;            /* Footer background */
+            --footer-text: #cbd5e1;          /* Footer text color */
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Container for consistent width and centering */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== ENHANCED NAVBAR STYLES ===== */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        /* Brand logo styling */
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .navbar-brand:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Main navigation container */
+        .navbar-collapse {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* Navigation lists */
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 0;
+        }
+
+        /* Individual navigation links */
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Special button-style navigation links */
+        .nav-btn {
+            background-color: var(--accent-color);
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background-color: #e69500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== DROPDOWN MENU ENHANCEMENTS ===== */
+        .nav-item.dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            list-style: none;
+            padding: 0.5rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Show dropdown on hover */
+        .nav-item.dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Dropdown menu items */
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            padding-left: 2rem;
+        }
+
+        /* Dropdown toggle indicator */
+        .dropdown-toggle::after {
+            content: "▾";
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        /* ===== ENHANCED ALERT STYLES ===== */
+        .alert-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 999;
+            max-width: 400px;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInRight 0.3s ease;
+        }
+
+        /* Alert type variations */
+        .alert-info { 
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            color: #1e40af;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .alert-success { 
+            background: linear-gradient(135deg, #d1fae5, #6ee7b7);
+            color: #065f46;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-warning { 
+            background: linear-gradient(135deg, #fef3c7, #fcd34d);
+            color: #92400e;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .alert-danger { 
+            background: linear-gradient(135deg, #fee2e2, #fca5a5);
+            color: #991b1b;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Alert close button */
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            margin-left: auto;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+            flex: 1;
+        }
+
+        /* ===== FOOTER STYLES ===== */
+        .footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-description {
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-link {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-link:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            text-align: center;
+            color: var(--footer-text);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-legal-link {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-legal-link:hover {
+            color: white;
+        }
+
+        /* ===== MOBILE RESPONSIVE STYLES ===== */
+        .navbar-toggler {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Alert animation */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            /* Mobile navbar toggler */
+            .navbar-toggler {
+                display: block;
+            }
+
+            /* Mobile navigation collapse */
+            .navbar-collapse {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-collapse.active {
+                display: flex;
+            }
+
+            /* Stack navigation items vertically on mobile */
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            /* Mobile navigation links */
+            .nav-link {
+                color: var(--dark-text);
+                padding: 0.75rem 1rem;
+                border-radius: 0.375rem;
+                width: 100%;
+            }
+
+            .nav-link:hover {
+                background-color: var(--light-bg);
+            }
+
+            /* Mobile dropdown adjustments */
+            .dropdown-menu {
+                position: static;
+                box-shadow: none;
+                border: 1px solid var(--border-color);
+                margin-top: 0.5rem;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+            }
+
+            /* Mobile alert adjustments */
+            .alert-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            /* Mobile footer adjustments */
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .footer-description {
+                margin: 0 auto 1.5rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .footer-legal {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== MAIN NAVIGATION ===== -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <!-- Brand Logo -->
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-rocket"></i>
+                TalentTrackU
+            </a>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="navbar-toggler" id="navbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Navigation Menu -->
+            <div class="navbar-collapse" id="navbarNav">
+                <!-- Left Navigation Items -->
+                <ul class="navbar-nav left-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_search' %}">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </a>
+                    </li>
+                    
+                </ul>
+                
+                <!-- Right Navigation Items -->
+                <ul class="navbar-nav right-nav">
+                    {% if user.is_authenticated %}
+                        <!-- Applications Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">
+                                <i class="fas fa-briefcase"></i>
+                                Applications
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'my_post_internship_applications' %}">
+                                        <i class="fas fa-user-graduate"></i>
+                                        Internship Applications
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'job:my_post_job_applications' %}">
+                                        <i class="fas fa-building"></i>
+                                        Job Applications
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- User Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">
+                                <i class="fas fa-user-circle"></i>
+                                {{ user.username|truncatechars:15 }}
+                                <small>({{ user.user_profile.role|title|default:"No Role" }})</small>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'profile' %}">
+                                        <i class="fas fa-id-card"></i>
+                                        My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'profile_edit' %}">
+                                        <i class="fas fa-edit"></i>
+                                        Edit Profile
+                                    </a>
+                                </li>
+                                <li>
+                                     {% if user.user_profile.is_admin and user.is_staff %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'custom_admin_dashboard' %}">Admin Panel</a></li>
+                        {% endif %}
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Post New Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">
+                                <i class="fas fa-plus-circle"></i>
+                                Post New
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'job:job_post_create' %}">
+                                        <i class="fas fa-briefcase"></i>
+                                        Post Job
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'research_paper_post_create' %}">
+                                        <i class="fas fa-file-alt"></i>
+                                        Post Research Paper
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'internship_post_create' %}">
+                                        <i class="fas fa-user-graduate"></i>
+                                        Post Internship
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Logout Button -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-btn" href="{% url 'user_logout' %}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- Guest User Options -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">
+                                <i class="fas fa-user-plus"></i>
+                                Sign Up
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-btn" href="{% url 'user_login' %}">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HOMEPAGE SPECIFIC CONTENT ===== -->
+    {% if request.resolver_match.url_name == 'home' %}
+        {% include "main_actions_section.html" %}
+    {% endif %}
+    
+    <!-- ===== BENEFITS ANIMATION SECTION ===== -->
+    {% include "benefits_animation.html" %}
+    
+    <!-- ===== MAIN CONTENT AREA ===== -->
+    <div class="container content">
+        <!-- ===== MESSAGES/ALERTS DISPLAY ===== -->
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <!-- Alert Icons based on message type -->
+                        <i class="fas 
+                            {% if message.tags == 'success' %}fa-check-circle
+                            {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle
+                            {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                            {% else %}fa-info-circle{% endif %}">
+                        </i>
+                        <span>{{ message }}</span>
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- ===== PAGE-SPECIFIC CONTENT BLOCK ===== -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- ===== FOOTER SECTION ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Brand and Description -->
+                <div class="footer-brand-section">
+                    <div class="footer-brand">
+                        <i class="fas fa-rocket"></i>
+                        TalentTrackU
+                    </div>
+                    <p class="footer-description">
+                        Connecting talented individuals with amazing opportunities in jobs, 
+                        research, and internships. Your career journey starts here.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
+                        <li><a href="{% url 'job:job_list' %}" class="footer-link">Browse Jobs</a></li>
+                        <li><a href="{% url 'research_paper_list' %}" class="footer-link">Research Papers</a></li>
+                        <li><a href="{% url 'internship_list' %}" class="footer-link">Internships</a></li>
+                        <li><a href="{% url 'user_search' %}" class="footer-link">Search</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Career Guide</a></li>
+                        <li><a href="#" class="footer-link">Resume Tips</a></li>
+                        <li><a href="#" class="footer-link">Interview Prep</a></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="footer-links-section">
+                    <h4 class="footer-heading">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Help Center</a></li>
+                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                        <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="#" class="footer-link">Terms of Service</a></li>
+                        <li><a href="#" class="footer-link">Report Issue</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="footer-copyright">
+                        &copy; 2024 TalentTrackU. All rights reserved.
+                    </div>
+                    <div class="footer-legal">
+                        <a href="#" class="footer-legal-link">Privacy Policy</a>
+                        <a href="#" class="footer-legal-link">Terms of Service</a>
+                        <a href="#" class="footer-legal-link">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== EXTERNAL JAVASCRIPT ===== -->
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    <!-- ===== ENHANCED JAVASCRIPT FUNCTIONALITY ===== -->
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== MOBILE MENU TOGGLE FUNCTIONALITY =====
+            const navbarToggler = document.getElementById('navbar-toggler');
+            const navbarCollapse = document.getElementById('navbarNav');
+            
+            // Toggle mobile menu when hamburger button is clicked
+            if (navbarToggler && navbarCollapse) {
+                navbarToggler.addEventListener('click', function() {
+                    navbarCollapse.classList.toggle('active');
+                });
+            }
+
+            // ===== ALERT CLOSE FUNCTIONALITY =====
+            // Add event listeners to all close buttons in alerts
+            document.querySelectorAll('.btn-close').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Hide the parent alert when close button is clicked
+                    this.closest('.alert').style.display = 'none';
+                });
+            });
+
+            // ===== AUTO-HIDE ALERTS AFTER 5 SECONDS =====
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.display = 'none';
+                });
+            }, 5000); // 5000 milliseconds = 5 seconds
+
+            // ===== SMOOTH SCROLLING ENHANCEMENT =====
+            // Enhance native smooth scrolling behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // ===== FOOTER CURRENT YEAR UPDATE =====
+            const yearElement = document.querySelector('.footer-copyright');
+            if (yearElement) {
+                const currentYear = new Date().getFullYear();
+                yearElement.innerHTML = `&copy; ${currentYear} TalentTrackU. All rights reserved.`;
+            }
+        });
+
+        // ===== WINDOW RESIZE HANDLER =====
+        // Close mobile menu when window is resized to desktop size
+        window.addEventListener('resize', function() {
+            const navbarCollapse = document.getElementById('navbarNav');
+            if (window.innerWidth > 768 && navbarCollapse) {
+                navbarCollapse.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
