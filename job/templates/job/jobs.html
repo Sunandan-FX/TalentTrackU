@@ -249,7 +249,7 @@
         opacity: 0.5;
     }
     
-    /* Animated Background Elements */
+    
     .animated-background {
         position: absolute;
         top: 0;
@@ -326,7 +326,7 @@
         }
     }
     
-    /* Responsive Design */
+    
     @media (max-width: 768px) {
         .jobs-content {
             margin: 1rem;
@@ -364,7 +364,7 @@
 </style>
 
 <div class="jobs-container">
-    <!-- Animated Background Elements -->
+    
     <div class="animated-background">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -489,7 +489,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add animation to cards on load
+        
         const cards = document.querySelectorAll('.job-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -514,7 +514,7 @@
             });
         });
         
-        // Enhanced delete confirmation
+       
         const deleteButtons = document.querySelectorAll('.btn-danger');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function(e) {
@@ -532,7 +532,7 @@
             });
         });
         
-        // Add image hover effect
+        
         const jobImages = document.querySelectorAll('.job-image');
         jobImages.forEach(image => {
             image.addEventListener('mouseenter', function() {
