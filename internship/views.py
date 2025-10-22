@@ -5,13 +5,13 @@ from django.contrib import messages
 from .models import Internship, InternshipApplication
 from .forms import InternshipPostForm, InternshipApplicationForm
 
-# Applicant: See all their internship applications
+
 @login_required
 def my_internship_applications(request):
     applications = InternshipApplication.objects.filter(applicant=request.user).select_related('internship').order_by('-applied_at')
     return render(request, 'internship/my_applications.html', {'applications': applications})
 
-# Post owner: See all applications for their internships
+
 @login_required
 def my_post_internship_applications(request):
     applications = InternshipApplication.objects.filter(internship__posted_by=request.user).select_related('internship', 'applicant').order_by('-applied_at')
@@ -20,8 +20,6 @@ def my_post_internship_applications(request):
 def internship_list(request):
     internships = Internship.objects.all().order_by('-created_at')
     applied_internships = []
-    # if request.user.is_authenticated:
-    #     applied_internships = Application.objects.filter(applicant=request.user, internship__isnull=False).values_list('internship_id', flat=True)
     return render(request, 'internship/internships.html', {'internships': internships, 'applied_internships': applied_internships})
 
 @login_required
