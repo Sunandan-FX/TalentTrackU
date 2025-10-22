@@ -1,0 +1,57 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Edit Application - Admin Panel{% endblock %}
+{% block page_title %}Edit Application{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Edit Application</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <strong>Applicant:</strong> {{ application.applicant.username }}
+                    </div>
+                    <div>
+                        <strong>Job:</strong> {{ application.job.title }}
+                    </div>
+                    <div>
+                        <strong>Company:</strong> {{ application.job.company }}
+                    </div>
+                    <div>
+                        <strong>Applied:</strong> {{ application.applied_at|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Status</label>
+                <select name="status" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;">
+                    <option value="pending" {% if application.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="accepted" {% if application.status == 'accepted' %}selected{% endif %}>Accepted</option>
+                    <option value="rejected" {% if application.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Cover Letter</label>
+                <textarea name="cover_letter" rows="8" 
+                          style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; resize: vertical;">{{ application.cover_letter }}</textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" style="background: var(--info); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-save"></i> Update Application
+                </button>
+                <a href="{% url 'admin_panel:admin_applications' %}" style="background: var(--text-secondary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
