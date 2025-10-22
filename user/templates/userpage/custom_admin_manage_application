@@ -1,1 +1,10 @@
-<!Doctype html>
+{% extends 'base.html' %}
+{% block title %}Manage Application{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1>Manage Application</h1>
+    <p>Applicant: {{ application.applicant.username }}</p>
+    <p>Opportunity: 
+        {% if application.job %}{{ application.job.title }}{% elif application.internship %}{{ application.internship.title }}{% elif application.paper %}{{ application.paper.title }}{% endif %}
+    </p>
+    <p>Current Status: {{ application.get_status_display }}</p>
