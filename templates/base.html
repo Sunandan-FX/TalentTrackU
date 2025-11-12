@@ -23,7 +23,7 @@
             --warning-color: #f59e0b;        /* Warning orange */
             --danger-color: #ef4444;         /* Danger red */
             --info-color: #3b82f6;           /* Info blue */
-            --footer-bg: #1e293b;            /* Footer background */
+            --footer-bg: #2760be;            /* Footer background */
             --footer-text: #cbd5e1;          /* Footer text color */
         }
 
@@ -321,6 +321,28 @@
             transform: translateX(5px);
         }
 
+        /* Small icons next to quick links (uses images in static/Image) */
+        .quick-link-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: cover;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Small icons for navbar links (keeps theme intact) */
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: cover;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+        }
+
         .social-links {
             display: flex;
             gap: 1rem;
@@ -512,7 +534,21 @@
                             Search
                         </a>
                     </li>
-                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'job:job_list' %}">
+                            <img src="{% static 'Image/Job.jpg' %}" alt="Jobs" class="nav-icon">Browse Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'research_paper_list' %}">
+                            <img src="{% static 'Image/Research.jpg' %}" alt="Research" class="nav-icon">Research
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'internship_list' %}">
+                            <img src="{% static 'Image/Intern.jpg' %}" alt="Internships" class="nav-icon">Internships
+                        </a>
+                    </li>
                 </ul>
                 
                 <!-- Right Navigation Items -->
@@ -694,9 +730,21 @@
                     <h4 class="footer-heading">Quick Links</h4>
                     <ul class="footer-links">
                         <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
-                        <li><a href="{% url 'job:job_list' %}" class="footer-link">Browse Jobs</a></li>
-                        <li><a href="{% url 'research_paper_list' %}" class="footer-link">Research Papers</a></li>
-                        <li><a href="{% url 'internship_list' %}" class="footer-link">Internships</a></li>
+                        <li>
+                            <a href="{% url 'job:job_list' %}" class="footer-link">
+                                <img src="{% static 'Image/Job.jpg' %}" alt="Jobs" class="quick-link-icon">Browse Jobs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'research_paper_list' %}" class="footer-link">
+                                <img src="{% static 'Image/Research.jpg' %}" alt="Research" class="quick-link-icon">Research Papers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'internship_list' %}" class="footer-link">
+                                <img src="{% static 'Image/Intern.jpg' %}" alt="Internships" class="quick-link-icon">Internships
+                            </a>
+                        </li>
                         <li><a href="{% url 'user_search' %}" class="footer-link">Search</a></li>
                     </ul>
                 </div>
