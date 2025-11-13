@@ -453,10 +453,12 @@
                         <tr>
                             <th>Job Position</th>
                             <th>Applicant</th>
-                            <th>Status</th>
+                            <th>Address</th>
+                            <th>GitHub</th>
+                            {% comment %} <th>Status</th> {% endcomment %}
                             <th>Date Applied</th>
                             <th>Resume</th>
-                            <th>Actions</th>
+                            {% comment %} <th>Actions</th> {% endcomment %}
                         </tr>
                     </thead>
                     <tbody>
@@ -485,6 +487,24 @@
                                 </div>
                             </td>
                             <td>
+                                {% if app.applicant.user_profile.address %}
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ app.applicant.user_profile.address }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if app.applicant.user_profile.github_link %}
+                                    <a href="{{ app.applicant.user_profile.github_link }}" target="_blank" class="resume-download">
+                                        <i class="fab fa-github"></i>
+                                        Profile
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            {% comment %} <td>
                                 <span class="status-badge status-{{ app.status }}">
                                     <i class="fas 
                                         {% if app.status == 'accepted' %}fa-check-circle
@@ -494,7 +514,7 @@
                                     </i>
                                     {{ app.get_status_display }}
                                 </span>
-                            </td>
+                            </td> {% endcomment %}
                             <td>
                                 <div class="applied-date">
                                     <i class="fas fa-calendar"></i>
@@ -512,13 +532,13 @@
                                     <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            {% comment %} <td>
                                 <div class="action-buttons">
                                     <a href="{% url 'job:job_application_manage' app.id %}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-edit"></i> Manage
                                     </a>
                                 </div>
-                            </td>
+                            </td> {% endcomment %}
                         </tr>
                         {% endfor %}
                     </tbody>
