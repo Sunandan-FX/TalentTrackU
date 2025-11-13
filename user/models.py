@@ -8,10 +8,13 @@ class UserProfile(models.Model):
         ('student', 'Student'),
         ('alumni', 'Alumni'),
         ('company', 'Company'),
+        ('faculty', 'Faculty'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    github_link = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
