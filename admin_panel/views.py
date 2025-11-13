@@ -78,6 +78,8 @@ def admin_edit_user(request, user_id):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         role = request.POST.get('role')
+        address = request.POST.get('address')
+        github_link = request.POST.get('github_link')
         is_active = request.POST.get('is_active') == 'on'
         
         # Update user
@@ -91,6 +93,8 @@ def admin_edit_user(request, user_id):
         # Update user profile
         if hasattr(user, 'user_profile'):
             user.user_profile.role = role
+            user.user_profile.address = address
+            user.user_profile.github_link = github_link
             user.user_profile.save()
         
         messages.success(request, f"User {username} updated successfully!")
