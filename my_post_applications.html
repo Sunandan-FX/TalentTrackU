@@ -1,0 +1,662 @@
+{% extends 'base.html' %}
+{% block title %}Applications for My Internships{% endblock %}
+{% block content %}
+<style>
+    .applications-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+    
+    .applications-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .applications-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .applications-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+    }
+    
+    .applications-header p {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+    
+    .applications-table-container {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .applications-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .applications-table thead {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    }
+    
+    .applications-table th {
+        color: white;
+        font-weight: 600;
+        padding: 1.5rem 1rem;
+        text-align: left;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .applications-table tbody tr {
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    
+    .applications-table tbody tr:hover {
+        background: var(--light-bg);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .applications-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    
+    .applications-table td {
+        padding: 1.5rem 1rem;
+        color: var(--dark-text);
+        font-weight: 500;
+        vertical-align: middle;
+    }
+    
+    .internship-title {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .applicant-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .applicant-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .applicant-name {
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: capitalize;
+    }
+    
+    .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    .status-accepted {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .status-rejected {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .status-under_review {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info-color);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    
+    .resume-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+    
+    .resume-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+    
+    .manage-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        color: var(--primary-color);
+        text-decoration: none;
+        border: 2px solid var(--primary-color);
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+    
+    .manage-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    .no-applications {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--secondary-color);
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+    
+    .no-applications i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--secondary-color);
+        opacity: 0.5;
+    }
+    
+    .no-applications h3 {
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+    
+    .promote-internships-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        text-decoration: none;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    
+    .promote-internships-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+    
+    
+    .animated-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .shape-1 {
+        width: 120px;
+        height: 120px;
+        top: 10%;
+        left: 8%;
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 80px;
+        height: 80px;
+        top: 70%;
+        left: 85%;
+        animation-delay: 2s;
+    }
+    
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        top: 40%;
+        left: 90%;
+        animation-delay: 4s;
+    }
+    
+    .applications-icon {
+        position: absolute;
+        font-size: 2rem;
+        color: var(--primary-color);
+        opacity: 0.2;
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .icon-1 {
+        top: 20%;
+        right: 12%;
+        animation-delay: 1s;
+    }
+    
+    .icon-2 {
+        bottom: 25%;
+        left: 10%;
+        animation-delay: 3s;
+    }
+    
+    .icon-3 {
+        top: 65%;
+        right: 18%;
+        animation-delay: 2s;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+    }
+    
+    
+    .stats-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border-top: 4px solid var(--primary-color);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: var(--secondary-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .applications-content {
+            margin: 1rem;
+        }
+        
+        .applications-header h1 {
+            font-size: 2rem;
+        }
+        
+        .applications-table-container {
+            overflow-x: auto;
+        }
+        
+        .applications-table {
+            min-width: 800px;
+        }
+        
+        .applications-table th,
+        .applications-table td {
+            padding: 1rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .stats-overview {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .floating-shape {
+            display: none;
+        }
+        
+        .applications-icon {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="applications-container">
+    <!-- Animated Background Elements -->
+    <div class="animated-background">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="applications-icon icon-1">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="applications-icon icon-2">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <div class="applications-icon icon-3">
+            <i class="fas fa-handshake"></i>
+        </div>
+    </div>
+    
+    <div class="applications-content">
+        <div class="applications-header">
+            <h1>Applications for My Internships</h1>
+            <p class="text-muted">Manage and review all applications for your posted internships</p>
+        </div>
+        
+        {% if applications %}
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalApplications">{{ applications|length }}</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingApplications">0</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="acceptedApplications">0</div>
+                    <div class="stat-label">Accepted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="rejectedApplications">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            
+            <div class="applications-table-container">
+                <table class="applications-table">
+                    <thead>
+                        <tr>
+                            <th>Internship Position</th>
+                            <th>Applicant</th>
+                            <th>Address</th>
+                            <th>GitHub</th>
+                            {% comment %} <th>Status</th> {% endcomment %}
+                            <th>Date Applied</th>
+                            <th>Resume</th>
+                            {% comment %} <th>Actions</th> {% endcomment %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>
+                                <span class="internship-title">{{ app.internship.title }}</span>
+                                <br>
+                                <small class="text-muted">{{ app.internship.company }}</small>
+                            </td>
+                            <td>
+                                <div class="applicant-info">
+                                    <div class="applicant-avatar">
+                                        {{ app.applicant.username|first|upper }}
+                                    </div>
+                                    <div>
+                                        <div class="applicant-name">{{ app.applicant.username }}</div>
+                                        <small class="text-muted">{{ app.applicant.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if app.applicant.user_profile.address %}
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ app.applicant.user_profile.address }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if app.applicant.user_profile.github_link %}
+                                    <a href="{{ app.applicant.user_profile.github_link }}" target="_blank" class="resume-download">
+                                        <i class="fab fa-github"></i>
+                                        Profile
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            {% comment %} <td>
+                                <span class="status-badge status-{{ app.status }}">
+                                    <i class="fas 
+                                        {% if app.status == 'accepted' %}fa-check-circle
+                                        {% elif app.status == 'rejected' %}fa-times-circle
+                                        {% elif app.status == 'pending' %}fa-clock
+                                        {% else %}fa-eye{% endif %}">
+                                    </i>
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td> {% endcomment %}
+                            <td>
+                                <div class="applied-date">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ app.applied_at|date:"M d, Y" }}
+                                </div>
+                                <small class="text-muted">{{ app.applied_at|date:"H:i" }}</small>
+                            </td>
+                            <td>
+                                {% if app.resume %}
+                                    <a href="{{ app.resume.url }}" download class="resume-download">
+                                        <i class="fas fa-download"></i>
+                                        Resume
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            {% comment %} <td>
+                                <a href="{% url 'internship_application_manage' app.id %}" class="manage-btn">
+                                    <i class="fas fa-cog"></i>
+                                    Manage
+                                </a>
+                            </td> {% endcomment %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="no-applications">
+                <i class="fas fa-users-slash"></i>
+                <h3>No Applications Yet</h3>
+                <p>You haven't received any applications for your internships yet.</p>
+                <a href="{% url 'internship_list' %}" class="promote-internships-btn">
+                    <i class="fas fa-eye"></i>
+                    View Your Internships
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calculate and animate stats
+        function calculateStats() {
+            let pending = 0;
+            let accepted = 0;
+            let rejected = 0;
+            
+            document.querySelectorAll('.status-badge').forEach(badge => {
+                const status = badge.className.match(/status-(\w+)/);
+                if (status) {
+                    switch(status[1]) {
+                        case 'pending':
+                            pending++;
+                            break;
+                        case 'accepted':
+                            accepted++;
+                            break;
+                        case 'rejected':
+                            rejected++;
+                            break;
+                    }
+                }
+            });
+            
+            // Animate stats counting
+            animateCounter('pendingApplications', pending);
+            animateCounter('acceptedApplications', accepted);
+            animateCounter('rejectedApplications', rejected);
+        }
+        
+        function animateCounter(elementId, target) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 50);
+        }
+        
+        // Add animation to table rows
+        const tableRows = document.querySelectorAll('.applications-table tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+        
+        // Add hover effects to buttons and links
+        const buttons = document.querySelectorAll('.resume-download, .manage-btn, .promote-internships-btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Add loading state to download buttons
+        const downloadButtons = document.querySelectorAll('.resume-download');
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+                
+                // Reset after 2 seconds (fallback)
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                }, 2000);
+            });
+        });
+        
+        // Add loading state to manage buttons
+        const manageButtons = document.querySelectorAll('.manage-btn');
+        manageButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            });
+        });
+        
+        // Calculate stats after animations
+        setTimeout(calculateStats, 500);
+        
+        // Add pulse animation to the no applications section
+        const noApplications = document.querySelector('.no-applications');
+        if (noApplications) {
+            noApplications.style.opacity = '0';
+            noApplications.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                noApplications.style.transition = 'all 0.5s ease';
+                noApplications.style.opacity = '1';
+                noApplications.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Add animation to stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    });
+</script>
+{% endblock %}
