@@ -23,12 +23,23 @@ def signup(request):
             user.user_profile.role = form.cleaned_data['role']
             if form.cleaned_data['profile_picture']:
                 user.user_profile.profile_picture = form.cleaned_data['profile_picture']
+            if form.cleaned_data.get('address'):
+                user.user_profile.address = form.cleaned_data['address']
+            if form.cleaned_data.get('github_link'):
+                user.user_profile.github_link = form.cleaned_data['github_link']
             user.user_profile.save()
             login(request, user)
             messages.success(request, f"Welcome, {user.username}! Your account has been created.")
             return redirect('job:job_list')  # Resolves to /jobs/
         else:
-            messages.error(request, "Please correct the errors below.")
+            # Show each form error as a separate notification for better UX
+            for field, errors in form.errors.items():
+                for err in errors:
+                    # If the field is __all__, show generic message
+                    if field == '__all__':
+                        messages.error(request, err)
+                    else:
+                        messages.error(request, f"{field}: {err}")
     else:
         form = SignUpForm()
     return render(request, 'userpage/signup.html', {'form': form})
@@ -98,7 +109,7 @@ def password_reset(request):
             messages.error(request, 'Passwords do not match.')
             return render(request, 'userpage/password_reset.html')
         if len(password1) < 8:
-            messages.error(request, 'Password must be at least 8 characters long.')
+            messages.error(request, 'Password must contain at least 8 characters.')
             return render(request, 'userpage/password_reset.html')
         user.set_password(password1)
         user.save()
