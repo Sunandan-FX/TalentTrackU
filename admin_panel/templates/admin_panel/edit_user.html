@@ -43,6 +43,7 @@
                         <option value="student" {% if user_obj.user_profile.role == 'student' %}selected{% endif %}>Student</option>
                         <option value="alumni" {% if user_obj.user_profile.role == 'alumni' %}selected{% endif %}>Alumni</option>
                         <option value="company" {% if user_obj.user_profile.role == 'company' %}selected{% endif %}>Company</option>
+                        <option value="faculty" {% if user_obj.user_profile.role == 'faculty' %}selected{% endif %}>Faculty</option>
                     </select>
                 </div>
                 <div>
@@ -54,6 +55,21 @@
                     <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
                         When unchecked, user cannot login
                     </p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Address</label>
+                    <input type="text" name="address" value="{{ user_obj.user_profile.address|default:'' }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;"
+                           placeholder="Enter address">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">GitHub Link</label>
+                    <input type="url" name="github_link" value="{{ user_obj.user_profile.github_link|default:'' }}" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;"
+                           placeholder="https://github.com/username">
                 </div>
             </div>
 
